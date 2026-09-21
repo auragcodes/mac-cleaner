@@ -60,3 +60,20 @@ def test_recursively_scan_directory_return_files_correctly(tmp_path: Path):
     assert "folder" in entry_map
     assert entry_map["folder"].entry_type == "directory"
     assert entry_map["folder"].size == 12
+
+def test_get_size_handles_dissapearing_files_correctly(tmp_path: Path):
+    folder = tmp_path / "folder"
+    folder.mkdir()
+
+    a = folder / "a.txt"
+    a.write_text("abcdef") # 6 bytes
+
+    b = folder / "b.txt"
+    b.write_text("ab") # 2 bytes
+
+    c = folder / "c.txt"
+    c.write_text("abc") # 3 bytes
+
+    c.unlink()
+
+    assert get_size(folder) == 8

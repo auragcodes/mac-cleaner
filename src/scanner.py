@@ -14,10 +14,15 @@ def get_size(path: Path | str) -> int:
     if target.is_dir():
         total_size = 0
         try:
-            for item in target.iterdir():
-                total_size += get_size(item)
+            items = list(target.iterdir())
         except FileNotFoundError:
             return 0
+        
+        for item in items:
+            try:
+                total_size += get_size(item)
+            except FileNotFoundError:
+                continue
         return total_size
     
     return 0

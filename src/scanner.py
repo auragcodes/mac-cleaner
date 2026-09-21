@@ -1,6 +1,27 @@
 from pathlib import Path
 from src.file_entry import FileEntry
 
+def get_size(path: Path | str) -> int:
+    # recursively finding the size and returning 0 if it dissapears during scanning
+    target = Path(path)
+
+    if target.is_file():
+        try:
+            return target.stat().st_size
+        except FileNotFoundError:
+            return 0
+        
+    if target.is_dir():
+        total_size = 0
+        try:
+            for item in target.iterdir():
+                total_size += get_size(item)
+        except FileNotFoundError:
+            return 0
+        return total_size
+    
+    return 0
+
 def scan_directory(path):
     directory = Path(path)
 
@@ -11,7 +32,7 @@ def scan_directory(path):
 
     for child in directory.iterdir():
         try:
-            size_bytes = child.stat().st_size
+            size_bytes = get_size(child)
 
             file_entry_child = FileEntry(
                 name=child.name,

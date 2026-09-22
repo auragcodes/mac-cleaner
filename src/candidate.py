@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 @dataclass
 class Candidate:
+    name: str
     path: str
     size: int
     category: str

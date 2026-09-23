@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from src.candidate import Candidate
 from src.file_entry import FileEntry
+from src.scanner import scan_directory
 
 @dataclass
 class Rule:
@@ -62,3 +63,7 @@ def find_candidates(entries: list[FileEntry], rules: list[Rule] = DEFAULT_RULES)
             candidates.append(candidate)
 
     return candidates
+
+def scan_and_find_candidates(path: str, rules: list[Rule] = DEFAULT_RULES) -> list[Candidate]:
+    entries = scan_directory(path)
+    return find_candidates(entries, rules)

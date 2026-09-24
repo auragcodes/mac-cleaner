@@ -76,7 +76,7 @@ python -m pytest
 
 ![demo-folder-for-testing-app](assets/demo_folder_image.png)
 
-<video src="assets/output.mp4" controls></video>
+[<video src="assets/output.mp4" controls></video>](https://github.com/user-attachments/assets/e15b6e88-599b-4ab1-90e2-9471cdb4ed69)
 
 The demo shows the scanner finding candidates, asking for user approval,
 and reporting the result of each cleanup attempt.
@@ -100,6 +100,7 @@ This project gave me practical experience with:
 - Testing filesystem errors with monkeypatch
 
 - Structuring a Python project into separate modules
+
 One of the main things I learned was that identifying a file as a
 cleanup candidate is not the same as knowing that it is safe to delete.
 That led me to add explicit user approval and safety checks before

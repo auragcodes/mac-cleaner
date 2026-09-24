@@ -6,7 +6,7 @@ from src.scanner import scan_directory
 @dataclass
 class Rule:
     rule_name: str
-    match_type: str # dir name or file(.extension)
+    match_type: str # "dir_name" or "file_extension" or "file_name"
     pattern: str
     category: str
     safety_classification: str
@@ -19,9 +19,13 @@ class Rule:
         if self.match_type == "file_extension":
             return entry.entry_type == "file" and entry.name.endswith(self.pattern)
         
+        if self.match_type == "file_name":
+            return entry.entry_type == "file" and entry.name == self.pattern
+        
         return False
     
 DEFAULT_RULES = [
+    # 1. Caches
     Rule(
         rule_name="Python Bytecode Cache",
         match_type="dir_name",
@@ -30,14 +34,41 @@ DEFAULT_RULES = [
         safety_classification="investigate",
         reason="Python compiled bytecode directory",
     ),
+    # 2. Logs
     Rule(
         rule_name="Log File",
         match_type="file_extension",
         pattern=".log",
         category="log",
         safety_classification="investigate",
-        reason="Application log file",
+        reason="Application or runtime log file",
     ),
+    # 3. Temporary Files
+    Rule(
+        rule_name="Temporary File (.tmp)",
+        match_type="file_extension",
+        pattern=".tmp",
+        category="temp_file",
+        safety_classification="investigate",
+        reason="Temporary operational file",
+    ),
+    Rule(
+        rule_name="Temporary File (.temp)",
+        match_type="file_extension",
+        pattern=".temp",
+        category="temp_file",
+        safety_classification="investigate",
+        reason="Temporary operational file",
+    ),
+    # 4. System Metadata
+    Rule(
+        rule_name="macOS Finder Metadata",
+        match_type="file_name",
+        pattern=".DS_Store",
+        category="system_metadata",
+        safety_classification="investigate",
+        reason="macOS Finder folder metadata file",
+    )
 ]
 
 def classify_entry(entry: FileEntry, rules: list[Rule] = DEFAULT_RULES) -> Candidate | None:

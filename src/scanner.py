@@ -5,6 +5,9 @@ def get_size(path: Path | str) -> int:
     # recursively finding the size and returning 0 if it dissapears during scanning
     target = Path(path)
 
+    if not target.exists():
+        return 0
+
     if target.is_file():
         try:
             return target.stat().st_size
@@ -46,6 +49,9 @@ def scan_directory(path):
                 size=size_bytes
             )
             results.append(file_entry_child)
+
+            if child.is_dir():
+                results.extend(scan_directory(child))
 
         except FileNotFoundError:
             continue

@@ -77,3 +77,17 @@ def test_get_size_handles_dissapearing_files_correctly(tmp_path: Path):
     c.unlink()
 
     assert get_size(folder) == 8
+
+def test_scan_finds_nested_targets(tmp_path: Path):
+    nested_folder = tmp_path / "nested_folder"
+    nested_folder.mkdir()
+
+    pycache_dir = nested_folder / "__pycache__"
+    pycache_dir.mkdir()
+    (pycache_dir / "compiled.pyc").write_text("bytecode")
+
+    entries = scan_directory(tmp_path)
+
+    entries_names = {entry.name for entry in entries}
+
+    assert "__pycache__" in entries_names
